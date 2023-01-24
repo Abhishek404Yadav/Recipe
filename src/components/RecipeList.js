@@ -11,7 +11,7 @@ export default function RecipeList({recipes}) {
         return <Recipe key={recipe.id} {...recipe} />
       })}
     </div>
-    <div className="btn__recipe-list">
+    <div className="btn-recipe-list__container">
     <button onClick={handleRecipeAdd} className="btn btn--primary">Add Recipe</button>
     </div>
     </div>
