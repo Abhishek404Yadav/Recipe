@@ -8,13 +8,13 @@ import RecipeEdit from './RecipeEdit'
  const LOCAL_STORAGE_KEY= "cooking.App.recipes";
 
 function App() {
-  const [selectedRecipeId, setSelectedRecipeId ] =useState();
   const [recipes,setRecipes]=useState(sampleRecipe);
+  const [selectedRecipeId, setSelectedRecipeId ] =useState();
   const selectedRecipe = recipes.find(recipe=> recipe.id === selectedRecipeId);
 
   useEffect(()=>{
     const localrecipe=JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-    if(localrecipe !== null) 
+    if(localrecipe !== null)  
     setRecipes(localrecipe)
   },[])
   
@@ -40,29 +40,28 @@ function App() {
   }
 
   function handleRecipeDelete(id){
+    if(selectedRecipeId != null && selectedRecipeId === id){
+      setSelectedRecipeId(undefined)
+    }
     setRecipes(recipes.filter(recipe=> recipe.id !== id))
   }
 
   function handleRecipeAdd(){
     const newRecipe={
       id:uuidv4(),
-      name: 'Name',
-      cooktime: '1:00',
-      servings: "1",
-      instructions : "Add Instruction",
+      name: '',
+      cooktime: '',
+      servings: "",
+      instructions : "",
       ingredients :[
         {
           id :uuidv4(),
-          name:"Ingredient 1",
-          quantity:"none"
-        },
-        {
-          id :uuidv4(),
-          name:"Ingredint 2",
-          quantity:"none"
+          name:"",
+          quantity:""
         }
       ]
     }
+    setSelectedRecipeId(newRecipe.id)
     setRecipes([...recipes,newRecipe])
   }
 

@@ -1,9 +1,10 @@
 import React,{useContext} from 'react'
 import RecipeIngredientEdit from './RecipeIngredientEdit'
 import { recipeContext } from './App'
+import {  v4 as uuidv4 } from 'uuid';
 
 export default function RecipeEdit({recipe}) {
-    const {handleRecipeChange}= useContext(recipeContext);
+    const {handleRecipeChange, handleRecipeEdit}= useContext(recipeContext);
 
     function handelChange(changes){
         handleRecipeChange(recipe.id,{...recipe, ...changes})
@@ -11,15 +12,30 @@ export default function RecipeEdit({recipe}) {
 
     function handleIngredientChange(id ,ingredient){
         const newIngredients = [...recipe.ingredients]
-        const index =newIngredients.findIndex(i=>i.id === id)  
+        const index =newIngredients.findIndex(ing=>ing.id === id)  
         newIngredients[index] = ingredient;
         handelChange({ingredients: newIngredients});
 
     }
+    function handleIngredientAdd(){
+        const newIngredient = {
+            id: uuidv4(),
+            name :'',
+            quantity:''
+        }
+        handelChange({ingredients: [...recipe.ingredients , newIngredient]})
+    }
+    function handleIngredientDelete(id){
+        handelChange({ingredients: recipe.ingredients.filter(ingredient=> ingredient.id !== id)})
+    }
   return (
     <div className='recipe-edit'>
         <div className='recipe-edit__remove-btn-container'>
-            <button className=' btn recipe-edit__remove-btn'>&times;</button>
+            <button
+            className=' btn recipe-edit__remove-btn'
+            onClick={()=> handleRecipeEdit(undefined)}
+            >&times;
+            </button>
         </div>
         <div className='recipe-edit__details-grid'>
             {/* htmlFor is used to make the label clickable */}
@@ -83,11 +99,18 @@ export default function RecipeEdit({recipe}) {
             <div>Amount</div>
             <div></div>
             {recipe.ingredients.map(ingredient=>{
-                return <RecipeIngredientEdit handleIngredientChange={handleIngredientChange} key={ingredient.id} ingredient={ingredient}/>
+                return <RecipeIngredientEdit
+                handleIngredientChange={handleIngredientChange}
+                handleIngredientDelete={handleIngredientDelete}
+                key={ingredient.id}
+                ingredient={ingredient}/>
             })}   
         </div>
         <div className='btn-recipe-list__container'>
-            <button className=' recipe-edit__btn btn--primary '>Add Ingredient</button>
+            <button
+            className=' recipe-edit__btn btn--primary '
+            onClick={()=>handleIngredientAdd()}
+            >Add Ingredient</button>
         </div>
     </div>
   )
